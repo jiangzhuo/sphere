@@ -1,3 +1,4 @@
+import './styles.css';
 import { SphereScene } from './SphereScene.js';
 import { BackgroundManager } from './BackgroundManager.js';
 import { ContentLoader } from './ContentLoader.js';
