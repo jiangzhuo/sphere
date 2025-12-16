@@ -14,7 +14,7 @@ class App {
     this.contentLoader = new ContentLoader();
 
     // Set default background
-    this.backgroundManager.setBackground('/backgrounds/default.png');
+    this.backgroundManager.setBackground(import.meta.env.BASE_URL + 'backgrounds/default.png');
 
     // Setup event listeners
     this.setupEventListeners();
