@@ -2,6 +2,7 @@ import './styles.css';
 import { SphereScene } from './SphereScene.js';
 import { BackgroundManager } from './BackgroundManager.js';
 import { ContentLoader } from './ContentLoader.js';
+import { RecordingManager } from './RecordingManager.js';
 
 class App {
   constructor() {
@@ -15,6 +16,10 @@ class App {
 
     // Set default background
     this.backgroundManager.setBackground(import.meta.env.BASE_URL + 'backgrounds/default.png');
+
+    // Initialize recording manager (with backgroundManager for compositing)
+    this.recordingManager = new RecordingManager(this.canvas, this.sphereScene, this.backgroundManager);
+    this.setupRecordingCallbacks();
 
     // Setup event listeners
     this.setupEventListeners();
@@ -33,7 +38,62 @@ class App {
     console.log('  P = print config');
   }
 
+  setupRecordingCallbacks() {
+    const exportBtn = document.getElementById('export-btn');
+    const exportStatus = document.getElementById('export-status');
+
+    this.recordingManager.onProgress = (progress) => {
+      const percent = Math.round(progress * 100);
+      exportStatus.textContent = `${percent}%`;
+    };
+
+    this.recordingManager.onComplete = () => {
+      exportBtn.disabled = false;
+      exportBtn.textContent = '⬇ Export Video';
+      exportStatus.textContent = 'Done!';
+      setTimeout(() => {
+        exportStatus.textContent = '';
+      }, 3000);
+    };
+
+    this.recordingManager.onError = (reason) => {
+      exportBtn.disabled = false;
+      exportBtn.textContent = '⬇ Export Video';
+      if (reason === 'rotation_stopped') {
+        exportStatus.textContent = 'Enable rotation first';
+      } else {
+        exportStatus.textContent = 'Export failed';
+      }
+      setTimeout(() => {
+        exportStatus.textContent = '';
+      }, 3000);
+    };
+  }
+
   setupEventListeners() {
+    // Export button handler
+    const exportBtn = document.getElementById('export-btn');
+    const exportStatus = document.getElementById('export-status');
+
+    exportBtn.addEventListener('click', async () => {
+      if (this.recordingManager.isRecording) {
+        return;
+      }
+
+      exportBtn.disabled = true;
+      exportBtn.textContent = 'Preparing...';
+      exportStatus.textContent = '';
+
+      const started = await this.recordingManager.startRecording();
+      if (started) {
+        exportBtn.textContent = 'Recording...';
+        exportStatus.textContent = '0%';
+      } else {
+        exportBtn.disabled = false;
+        exportBtn.textContent = '⬇ Export Video';
+      }
+    });
+
     // File upload handler
     const uploadInput = document.getElementById('content-upload');
     uploadInput.addEventListener('change', async (e) => {
@@ -185,6 +245,11 @@ class App {
 
     // Render scene
     this.sphereScene.render();
+
+    // Check recording progress
+    if (this.recordingManager.isRecording) {
+      this.recordingManager.checkProgress();
+    }
   }
 }
 

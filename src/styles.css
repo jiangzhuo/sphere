@@ -173,6 +173,37 @@ html, body {
   border: none;
 }
 
+/* Export button styles */
+#export-btn {
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: white;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  width: 100%;
+}
+
+#export-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+#export-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+#export-status {
+  color: #888;
+  font-size: 12px;
+  text-align: center;
+  min-height: 16px;
+}
+
 .control-info {
   margin-top: auto;
   padding-top: 20px;
