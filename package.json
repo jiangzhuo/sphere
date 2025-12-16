@@ -1,0 +1,19 @@
+{
+  "name": "sphere",
+  "version": "1.0.0",
+  "description": "Las Vegas Sphere Simulator with LED effects",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "vite": "^6.0.3",
+    "vite-plugin-glsl": "^1.3.0"
+  },
+  "private": true
+}
