@@ -52,7 +52,9 @@ export class LEDSphere {
         uTextureVScale: { value: 1.0 },
         uTextureVOffset: { value: 0.0 },
         // Effect mode: 0=CRT, 1=LED, 2=LCD, 3=Plasma, 4=Neon, 5=Holographic
-        uEffectMode: { value: 0 }
+        uEffectMode: { value: 0 },
+        // Animated content mode (GIF) - bypasses V scaling
+        uIsAnimated: { value: 0.0 }
       },
       transparent: true,
       side: THREE.FrontSide
@@ -111,6 +113,10 @@ export class LEDSphere {
       texture.needsUpdate = true;
       this.material.uniforms.uTexture.value = texture;
     }
+  }
+
+  setAnimated(isAnimated) {
+    this.material.uniforms.uIsAnimated.value = isAnimated ? 1.0 : 0.0;
   }
 
   update() {

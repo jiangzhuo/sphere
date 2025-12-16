@@ -84,7 +84,13 @@ class App {
       exportBtn.textContent = 'Preparing...';
       exportStatus.textContent = '';
 
-      const started = await this.recordingManager.startRecording();
+      // For GIF, pass animation duration; for static content, duration is ignored
+      let duration = 5000; // Default 5s fallback
+      if (this.contentLoader.isAnimated) {
+        duration = this.contentLoader.getAnimationDuration();
+      }
+
+      const started = await this.recordingManager.startRecording(duration);
       if (started) {
         exportBtn.textContent = 'Recording...';
         exportStatus.textContent = '0%';
@@ -101,7 +107,8 @@ class App {
       if (file) {
         const texture = await this.contentLoader.loadFromFile(file);
         if (texture) {
-          this.sphereScene.setContent(texture);
+          // Pass animation state to scene (no rotation for GIF)
+          this.sphereScene.setContent(texture, this.contentLoader.isAnimated);
         }
       }
     });
@@ -140,6 +147,8 @@ class App {
       this.speedMultiplier = parseFloat(e.target.value);
       speedValue.textContent = this.speedMultiplier.toFixed(1) + 'x';
       updateRotationSpeed();
+      // Sync GIF playback speed
+      this.contentLoader.setSpeedMultiplier(this.speedMultiplier);
     });
 
     // Effect selector handler

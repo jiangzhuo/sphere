@@ -6,6 +6,7 @@ export class SphereScene {
     this.canvas = canvas;
     this.rotationSpeed = 0.005;  // Texture rotation speed (radians per frame)
     this.textureRotation = 0;   // Current texture rotation angle
+    this.isAnimatedContent = false;  // Whether content is animated (GIF)
 
     // Background image dimensions
     this.imageWidth = 1500;
@@ -147,7 +148,9 @@ export class SphereScene {
     this.sphere.scale.setScalar(worldRadius);
   }
 
-  setContent(texture) {
+  setContent(texture, isAnimated = false) {
+    this.isAnimatedContent = isAnimated;
+    this.ledSphere.setAnimated(isAnimated);  // Notify shader to use animated mode
     this.ledSphere.setTexture(texture);
   }
 
@@ -193,9 +196,11 @@ export class SphereScene {
   }
 
   render() {
-    // Rotate texture content (not the sphere mesh - keeps clipping fixed)
-    this.textureRotation += this.rotationSpeed;
-    this.ledSphere.material.uniforms.uTextureRotation.value = this.textureRotation;
+    // Only apply rotation for non-animated content (not GIF)
+    if (!this.isAnimatedContent) {
+      this.textureRotation += this.rotationSpeed;
+      this.ledSphere.material.uniforms.uTextureRotation.value = this.textureRotation;
+    }
 
     // Update LED shader time uniform
     this.ledSphere.update();

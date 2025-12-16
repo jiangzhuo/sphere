@@ -25,6 +25,9 @@ uniform float uTextureVOffset;  // V offset (usually 0)
 // Effect mode: 0=CRT, 1=LED, 2=LCD, 3=Plasma, 4=Neon, 5=Holographic
 uniform int uEffectMode;
 
+// Animated content mode (GIF) - bypasses V scaling
+uniform float uIsAnimated;
+
 varying vec2 vUv;
 varying vec3 vNormal;
 varying vec3 vPosition;
@@ -437,8 +440,15 @@ void main() {
   vec3 rotationAxis = vec3(sin(uRotationTiltZ), cos(uRotationTiltZ), 0.0);
   vec2 rotatedUV = rotateTiltedUV(vUv, rotationAxis, uTextureRotation);
 
-  // Scale V coordinate to fit texture within visible clipped area
-  vec2 scaledUV = vec2(rotatedUV.x, rotatedUV.y * uTextureVScale + uTextureVOffset);
+  // Scale V coordinate based on content type
+  vec2 scaledUV;
+  if (uIsAnimated > 0.5) {
+    // Animated content (GIF): use UV directly, texture fills visible area
+    scaledUV = rotatedUV;
+  } else {
+    // Rotating content: apply V scaling to fit within visible clipped area
+    scaledUV = vec2(rotatedUV.x, rotatedUV.y * uTextureVScale + uTextureVOffset);
+  }
 
   // Calculate pixel coordinates
   vec2 pixelCoord = vec2(scaledUV.x * uLedCountX, scaledUV.y * uLedCountY);

@@ -19,6 +19,11 @@ export class RecordingManager {
     this.backgroundImage = null;
     this.animationFrameId = null;
 
+    // Time-based recording for animated content (GIF)
+    this.isTimeBasedRecording = false;
+    this.recordingDuration = 0;    // Duration in ms
+    this.recordingStartTime = 0;
+
     // Callbacks for UI updates
     this.onProgress = null;
     this.onComplete = null;
@@ -27,19 +32,25 @@ export class RecordingManager {
 
   /**
    * Check if recording is possible
+   * Returns mode: 'time_based' for animated content, 'rotation_based' for static
    */
   canRecord() {
-    // Need rotation to be active
-    if (Math.abs(this.sphereScene.rotationSpeed) < 0.0001) {
-      return { ok: false, reason: 'rotation_stopped' };
-    }
-
-    // Check MediaRecorder support
+    // Check MediaRecorder support first
     if (!window.MediaRecorder) {
       return { ok: false, reason: 'not_supported' };
     }
 
-    return { ok: true };
+    // For animated content (GIF), use time-based recording
+    if (this.sphereScene.isAnimatedContent) {
+      return { ok: true, mode: 'time_based' };
+    }
+
+    // For static content, need rotation to be active
+    if (Math.abs(this.sphereScene.rotationSpeed) < 0.0001) {
+      return { ok: false, reason: 'rotation_stopped' };
+    }
+
+    return { ok: true, mode: 'rotation_based' };
   }
 
   /**
@@ -144,9 +155,12 @@ export class RecordingManager {
   }
 
   /**
-   * Start recording one complete rotation cycle
+   * Start recording
+   * For rotation-based: records one complete rotation cycle
+   * For time-based (GIF): records for specified duration
+   * @param {number} duration - Duration in ms for time-based recording (default: 5000ms)
    */
-  async startRecording() {
+  async startRecording(duration = 5000) {
     const check = this.canRecord();
     if (!check.ok) {
       if (this.onError) {
@@ -163,7 +177,16 @@ export class RecordingManager {
 
     // Reset state
     this.chunks = [];
-    this.startRotation = this.sphereScene.textureRotation;
+
+    // Set recording mode based on content type
+    if (check.mode === 'time_based') {
+      this.isTimeBasedRecording = true;
+      this.recordingDuration = duration;
+      this.recordingStartTime = performance.now();
+    } else {
+      this.isTimeBasedRecording = false;
+      this.startRotation = this.sphereScene.textureRotation;
+    }
 
     try {
       this.isRecording = true;
@@ -238,7 +261,9 @@ export class RecordingManager {
   }
 
   /**
-   * Check if one complete rotation cycle is done
+   * Check recording progress
+   * For rotation-based: checks if one complete rotation cycle is done
+   * For time-based (GIF): checks if recording duration has elapsed
    * Call this in animation loop
    * @returns {number} Progress 0-1, or -1 if not recording
    */
@@ -247,17 +272,31 @@ export class RecordingManager {
       return -1;
     }
 
-    const currentRotation = this.sphereScene.textureRotation;
-    const rotationDelta = Math.abs(currentRotation - this.startRotation);
-    const progress = Math.min(rotationDelta / (Math.PI * 2), 1);
+    let progress;
+
+    if (this.isTimeBasedRecording) {
+      // Time-based progress for animated content (GIF)
+      const elapsed = performance.now() - this.recordingStartTime;
+      progress = Math.min(elapsed / this.recordingDuration, 1);
+
+      // Check if duration complete
+      if (elapsed >= this.recordingDuration) {
+        this.stopRecording();
+      }
+    } else {
+      // Rotation-based progress for static content
+      const currentRotation = this.sphereScene.textureRotation;
+      const rotationDelta = Math.abs(currentRotation - this.startRotation);
+      progress = Math.min(rotationDelta / (Math.PI * 2), 1);
+
+      // Check if complete cycle
+      if (rotationDelta >= Math.PI * 2) {
+        this.stopRecording();
+      }
+    }
 
     if (this.onProgress) {
       this.onProgress(progress);
-    }
-
-    // Check if complete cycle
-    if (rotationDelta >= Math.PI * 2) {
-      this.stopRecording();
     }
 
     return progress;
