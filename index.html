@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Las Vegas Sphere Simulator</title>
-  <script type="module" crossorigin src="/sphere/assets/index-C1rI5TG_.js"></script>
-  <link rel="stylesheet" crossorigin href="/sphere/assets/index-BQUB_bKy.css">
+  <script type="module" crossorigin src="/sphere/assets/index-Cw5I8hml.js"></script>
+  <link rel="stylesheet" crossorigin href="/sphere/assets/index-8gTKp_9s.css">
 </head>
 <body>
   <div id="app">
@@ -74,23 +74,29 @@
       <div class="control-section">
         <div class="section-title">Export</div>
         <div class="control-group">
-          <button id="export-btn">⬇ Export Video</button>
+          <button id="export-image-btn">📷 Export Image</button>
+        </div>
+        <div class="control-group">
+          <button id="export-btn">🎬 Export Video</button>
           <span id="export-status"></span>
         </div>
       </div>
 
-      <div class="control-info">
-        <p><strong>Position</strong></p>
-        <p>Arrow keys: Move</p>
-        <p>R / Shift+R: Size</p>
-        <p><strong>Clipping</strong></p>
-        <p>W/S: Tilt forward/back</p>
-        <p>A/D: Tilt left/right</p>
-        <p>Q/E: Offset</p>
-        <p>C: Toggle clip</p>
-        <p><strong>Other</strong></p>
-        <p>P: Print config</p>
-      </div>
+      <details class="control-info">
+        <summary>Keyboard Shortcuts</summary>
+        <div class="control-info-content">
+          <p><strong>Position</strong></p>
+          <p>Arrow keys: Move</p>
+          <p>R / Shift+R: Size</p>
+          <p><strong>Clipping</strong></p>
+          <p>W/S: Tilt forward/back</p>
+          <p>A/D: Tilt left/right</p>
+          <p>Q/E: Offset</p>
+          <p>C: Toggle clip</p>
+          <p><strong>Other</strong></p>
+          <p>P: Print config</p>
+        </div>
+      </details>
     </div>
   </div>
 </body>
