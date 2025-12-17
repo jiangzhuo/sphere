@@ -54,7 +54,11 @@ export class LEDSphere {
         // Effect mode: 0=CRT, 1=LED, 2=LCD, 3=Plasma, 4=Neon, 5=Holographic
         uEffectMode: { value: 0 },
         // Animated content mode (GIF) - bypasses V scaling
-        uIsAnimated: { value: 0.0 }
+        uIsAnimated: { value: 0.0 },
+        // User texture transform controls
+        uTextureScale: { value: 1.0 },
+        uTextureUOffset: { value: 0.0 },
+        uUserTextureVOffset: { value: 0.0 }
       },
       transparent: true,
       side: THREE.FrontSide
@@ -203,6 +207,19 @@ export class LEDSphere {
   setClipOffset(offset) {
     this.clipConfig.offset = offset;
     this.updateClipPlane();
+  }
+
+  // Texture transform methods
+  setTextureScale(scale) {
+    this.material.uniforms.uTextureScale.value = Math.max(0.1, Math.min(5.0, scale));
+  }
+
+  setTextureUOffset(offset) {
+    this.material.uniforms.uTextureUOffset.value = offset;
+  }
+
+  setUserTextureVOffset(offset) {
+    this.material.uniforms.uUserTextureVOffset.value = offset;
   }
 
   getClipConfig() {

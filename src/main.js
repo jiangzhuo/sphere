@@ -157,6 +157,32 @@ class App {
       this.sphereScene.ledSphere.setEffect(e.target.value);
     });
 
+    // Texture transform controls
+    const textureScaleSlider = document.getElementById('texture-scale-slider');
+    const textureScaleValue = document.getElementById('texture-scale-value');
+    const textureXSlider = document.getElementById('texture-x-slider');
+    const textureXValue = document.getElementById('texture-x-value');
+    const textureYSlider = document.getElementById('texture-y-slider');
+    const textureYValue = document.getElementById('texture-y-value');
+
+    textureScaleSlider.addEventListener('input', (e) => {
+      const scale = parseFloat(e.target.value);
+      textureScaleValue.textContent = scale.toFixed(1) + 'x';
+      this.sphereScene.ledSphere.setTextureScale(scale);
+    });
+
+    textureXSlider.addEventListener('input', (e) => {
+      const offset = parseFloat(e.target.value);
+      textureXValue.textContent = offset.toFixed(2);
+      this.sphereScene.ledSphere.setTextureUOffset(offset);
+    });
+
+    textureYSlider.addEventListener('input', (e) => {
+      const offset = parseFloat(e.target.value);
+      textureYValue.textContent = offset.toFixed(2);
+      this.sphereScene.ledSphere.setUserTextureVOffset(offset);
+    });
+
     // Keyboard controls
     window.addEventListener('keydown', (e) => {
       const config = this.sphereScene.imageConfig;

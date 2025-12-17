@@ -28,6 +28,11 @@ uniform int uEffectMode;
 // Animated content mode (GIF) - bypasses V scaling
 uniform float uIsAnimated;
 
+// User texture transform controls
+uniform float uTextureScale;        // Overall scale (1.0 = original)
+uniform float uTextureUOffset;      // Horizontal offset
+uniform float uUserTextureVOffset;  // User-controlled vertical offset
+
 varying vec2 vUv;
 varying vec3 vNormal;
 varying vec3 vPosition;
@@ -450,27 +455,33 @@ void main() {
     scaledUV = vec2(rotatedUV.x, rotatedUV.y * uTextureVScale + uTextureVOffset);
   }
 
+  // Apply user texture transform (scale from center, then offset)
+  vec2 transformedUV = scaledUV;
+  transformedUV = (transformedUV - 0.5) / uTextureScale + 0.5;  // Scale from center
+  transformedUV.x += uTextureUOffset;  // Apply horizontal offset
+  transformedUV.y += uUserTextureVOffset;  // Apply vertical offset
+
   // Calculate pixel coordinates
-  vec2 pixelCoord = vec2(scaledUV.x * uLedCountX, scaledUV.y * uLedCountY);
+  vec2 pixelCoord = vec2(transformedUV.x * uLedCountX, transformedUV.y * uLedCountY);
   vec2 pixelIndex = floor(pixelCoord);
   vec2 pixelLocal = fract(pixelCoord);
 
   // Select effect
   vec4 result;
   if (uEffectMode == 0) {
-    result = effectNone(scaledUV);
+    result = effectNone(transformedUV);
   } else if (uEffectMode == 1) {
-    result = effectCRT(scaledUV, pixelIndex, pixelLocal);
+    result = effectCRT(transformedUV, pixelIndex, pixelLocal);
   } else if (uEffectMode == 2) {
-    result = effectLED(scaledUV, pixelIndex, pixelLocal);
+    result = effectLED(transformedUV, pixelIndex, pixelLocal);
   } else if (uEffectMode == 3) {
-    result = effectLCD(scaledUV, pixelIndex, pixelLocal);
+    result = effectLCD(transformedUV, pixelIndex, pixelLocal);
   } else if (uEffectMode == 4) {
-    result = effectPlasma(scaledUV, pixelIndex, pixelLocal);
+    result = effectPlasma(transformedUV, pixelIndex, pixelLocal);
   } else if (uEffectMode == 5) {
-    result = effectNeon(scaledUV, pixelIndex, pixelLocal);
+    result = effectNeon(transformedUV, pixelIndex, pixelLocal);
   } else {
-    result = effectHolographic(scaledUV, pixelIndex, pixelLocal);
+    result = effectHolographic(transformedUV, pixelIndex, pixelLocal);
   }
 
   // Apply brightness
