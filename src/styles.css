@@ -69,8 +69,7 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding-bottom: 15px;
-  margin-bottom: 15px;
+  padding-bottom: 20px;
   border-bottom: 1px solid #333;
 }
 
@@ -196,7 +195,8 @@ html, body {
 }
 
 /* Export button styles */
-#export-btn {
+#export-btn,
+#export-image-btn {
   padding: 12px 16px;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -209,12 +209,14 @@ html, body {
   width: 100%;
 }
 
-#export-btn:hover:not(:disabled) {
+#export-btn:hover:not(:disabled),
+#export-image-btn:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.15);
   border-color: rgba(255, 255, 255, 0.4);
 }
 
-#export-btn:disabled {
+#export-btn:disabled,
+#export-image-btn:disabled {
   cursor: not-allowed;
   opacity: 0.6;
 }
@@ -228,12 +230,33 @@ html, body {
 
 .control-info {
   margin-top: auto;
-  padding-top: 20px;
+  padding-top: 10px;
   border-top: 1px solid #333;
+  flex-shrink: 0;
+}
+
+.control-info summary {
+  color: #aaa;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 6px 0;
+  outline: none;
+  user-select: none;
+}
+
+.control-info summary:hover {
+  color: #fff;
+}
+
+.control-info-content {
+  max-height: 180px;
+  overflow-y: auto;
+  padding-right: 5px;
 }
 
 .control-info p {
   color: #888;
-  font-size: 12px;
-  margin-bottom: 6px;
+  font-size: 11px;
+  margin-bottom: 4px;
+  padding-left: 8px;
 }

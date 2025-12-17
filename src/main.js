@@ -49,7 +49,7 @@ class App {
 
     this.recordingManager.onComplete = () => {
       exportBtn.disabled = false;
-      exportBtn.textContent = '⬇ Export Video';
+      exportBtn.textContent = '🎬 Export Video';
       exportStatus.textContent = 'Done!';
       setTimeout(() => {
         exportStatus.textContent = '';
@@ -58,7 +58,7 @@ class App {
 
     this.recordingManager.onError = (reason) => {
       exportBtn.disabled = false;
-      exportBtn.textContent = '⬇ Export Video';
+      exportBtn.textContent = '🎬 Export Video';
       if (reason === 'rotation_stopped') {
         exportStatus.textContent = 'Enable rotation first';
       } else {
@@ -96,8 +96,14 @@ class App {
         exportStatus.textContent = '0%';
       } else {
         exportBtn.disabled = false;
-        exportBtn.textContent = '⬇ Export Video';
+        exportBtn.textContent = '🎬 Export Video';
       }
+    });
+
+    // Export image button handler
+    const exportImageBtn = document.getElementById('export-image-btn');
+    exportImageBtn.addEventListener('click', () => {
+      this.exportImage();
     });
 
     // File upload handler
@@ -267,6 +273,70 @@ class App {
           break;
       }
     });
+  }
+
+  async exportImage() {
+    const container = this.canvas.parentElement;
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+
+    // Create composite canvas
+    const compositeCanvas = document.createElement('canvas');
+    compositeCanvas.width = width;
+    compositeCanvas.height = height;
+    const ctx = compositeCanvas.getContext('2d');
+
+    // Draw background
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(0, 0, width, height);
+
+    // Load and draw background image
+    const bgUrl = this.backgroundManager.currentBackground;
+    if (bgUrl) {
+      try {
+        const img = await new Promise((resolve, reject) => {
+          const image = new Image();
+          image.crossOrigin = 'anonymous';
+          image.onload = () => resolve(image);
+          image.onerror = reject;
+          image.src = bgUrl;
+        });
+
+        // Draw with 'contain' sizing
+        const imgAspect = img.width / img.height;
+        const canvasAspect = width / height;
+        let drawWidth, drawHeight, offsetX, offsetY;
+
+        if (canvasAspect > imgAspect) {
+          drawHeight = height;
+          drawWidth = drawHeight * imgAspect;
+          offsetX = (width - drawWidth) / 2;
+          offsetY = 0;
+        } else {
+          drawWidth = width;
+          drawHeight = drawWidth / imgAspect;
+          offsetX = 0;
+          offsetY = (height - drawHeight) / 2;
+        }
+
+        ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+      } catch (e) {
+        console.warn('Failed to load background for image export');
+      }
+    }
+
+    // Render WebGL scene and draw on top
+    this.sphereScene.render();
+    ctx.drawImage(this.canvas, 0, 0);
+
+    // Export as PNG
+    const dataUrl = compositeCanvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = `sphere-export-${Date.now()}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
 
   animate() {
