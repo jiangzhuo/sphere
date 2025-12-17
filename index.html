@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Las Vegas Sphere Simulator</title>
-  <script type="module" crossorigin src="/sphere/assets/index-mVzOHZN5.js"></script>
-  <link rel="stylesheet" crossorigin href="/sphere/assets/index-CH6UpD89.css">
+  <script type="module" crossorigin src="/sphere/assets/index-C1rI5TG_.js"></script>
+  <link rel="stylesheet" crossorigin href="/sphere/assets/index-BQUB_bKy.css">
 </head>
 <body>
   <div id="app">
@@ -15,38 +15,70 @@
     </div>
     <div id="control-panel">
       <h3>Controls</h3>
-      <div class="control-group">
-        <input type="file" id="content-upload" accept="image/*,.gif" />
-        <label for="content-upload">Upload Image/GIF</label>
+
+      <!-- Section: Upload -->
+      <div class="control-section">
+        <div class="control-group">
+          <input type="file" id="content-upload" accept="image/*,.gif" />
+          <label for="content-upload">Upload Image/GIF</label>
+        </div>
       </div>
-      <div class="control-group">
-        <label class="select-label">Rotation</label>
-        <select id="rotation-select">
-          <option value="cw">Clockwise →</option>
-          <option value="ccw">Counter-clockwise ←</option>
-          <option value="stop">Stop ⏸</option>
-        </select>
+
+      <!-- Section: Texture -->
+      <div class="control-section">
+        <div class="section-title">Texture</div>
+        <div class="control-group">
+          <label class="select-label">Scale: <span id="texture-scale-value">1.0x</span></label>
+          <input type="range" id="texture-scale-slider" min="0.5" max="3" step="0.1" value="1" />
+        </div>
+        <div class="control-group">
+          <label class="select-label">X: <span id="texture-x-value">0.00</span></label>
+          <input type="range" id="texture-x-slider" min="-0.5" max="0.5" step="0.01" value="0" />
+        </div>
+        <div class="control-group">
+          <label class="select-label">Y: <span id="texture-y-value">0.00</span></label>
+          <input type="range" id="texture-y-slider" min="-0.5" max="0.5" step="0.01" value="0" />
+        </div>
       </div>
-      <div class="control-group">
-        <label class="select-label">Speed: <span id="speed-value">1.0x</span></label>
-        <input type="range" id="speed-slider" min="0" max="5" step="0.1" value="1" />
+
+      <!-- Section: Animation -->
+      <div class="control-section">
+        <div class="section-title">Animation</div>
+        <div class="control-group">
+          <label class="select-label">Rotation</label>
+          <select id="rotation-select">
+            <option value="cw">Clockwise →</option>
+            <option value="ccw">Counter-clockwise ←</option>
+            <option value="stop">Stop ⏸</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label class="select-label">Speed: <span id="speed-value">1.0x</span></label>
+          <input type="range" id="speed-slider" min="0" max="5" step="0.1" value="1" />
+        </div>
+        <div class="control-group">
+          <label class="select-label">Display Effect</label>
+          <select id="effect-select">
+            <option value="none">None (Raw)</option>
+            <option value="crt">CRT 90s</option>
+            <option value="led">LED Matrix</option>
+            <option value="lcd">LCD Panel</option>
+            <option value="plasma">Plasma</option>
+            <option value="neon">Neon Glow</option>
+            <option value="holographic">Holographic</option>
+          </select>
+        </div>
       </div>
-      <div class="control-group">
-        <label class="select-label">Display Effect</label>
-        <select id="effect-select">
-          <option value="none">None (Raw)</option>
-          <option value="crt">CRT 90s</option>
-          <option value="led">LED Matrix</option>
-          <option value="lcd">LCD Panel</option>
-          <option value="plasma">Plasma</option>
-          <option value="neon">Neon Glow</option>
-          <option value="holographic">Holographic</option>
-        </select>
+
+      <!-- Section: Export -->
+      <div class="control-section">
+        <div class="section-title">Export</div>
+        <div class="control-group">
+          <button id="export-btn">⬇ Export Video</button>
+          <span id="export-status"></span>
+        </div>
       </div>
-      <div class="control-group">
-        <button id="export-btn">⬇ Export Video</button>
-        <span id="export-status"></span>
-      </div>
+
       <div class="control-info">
         <p><strong>Position</strong></p>
         <p>Arrow keys: Move</p>
