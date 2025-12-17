@@ -21,9 +21,9 @@ npm run dev
 
 ブラウザで開いて、右側のパネルから画像をアップロードするだけ。
 
-## スクリーンショット
+## デモ
 
-（そのうち追加するかも）
+https://github.com/jiangzhuo/sphere/raw/master/assets/demo.mp4
 
 ## 注意
 
