@@ -23,7 +23,7 @@ npm run dev
 
 ## デモ
 
-<video src="https://github.com/jiangzhuo/sphere/raw/master/assets/demo.mp4" controls width="600"></video>
+![Demo](assets/demo.gif)
 
 ## 注意
 
